@@ -7,6 +7,8 @@ using Photon.Realtime;
 public class NetMan : MonoBehaviourPunCallbacks
 {
     Spinner lavaBladeSpinner;
+    public GameObject playerPrefab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,5 +21,8 @@ public class NetMan : MonoBehaviourPunCallbacks
         float netTime = (float)PhotonNetwork.Time;
         lavaBladeSpinner.transform.eulerAngles =
             lavaBladeSpinner.spinVec * netTime;
+
+        Vector3 pos = new Vector3(Random.Range(-8, 8), Random.Range(-4, 4), 0);
+        PhotonNetwork.Instantiate(playerPrefab.name, pos, Quaternion.identity);
     }
 }

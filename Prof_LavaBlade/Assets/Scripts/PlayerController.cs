@@ -1,28 +1,53 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPunCallbacks
 {
     Rigidbody myBod;
     public float moveForce;
     public int health;
+    Transform healthBar;
+    
+    //happens at game object creation time
+    void Awake()
+    {
+        myBod = GetComponent<Rigidbody>();
+        healthBar = GameObject.Find("GreenHealth").transform;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        myBod = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        myBod.AddForce(moveForce * (new Vector3(h, v, 0)) * Time.deltaTime);
+        //ONLY MOVE THE CUBE I OWN
+        if (photonView.IsMine)
+        {
+            float h = Input.GetAxis("Horizontal");
+            float v = Input.GetAxis("Vertical");
+            myBod.AddForce(moveForce * (new Vector3(h, v, 0)) * Time.deltaTime);
+            //SEND POS AND VEL OVER NETWORK TO ALL OTHER PLAYERS
+            //Done by photonRigidbodyView component
+        }
+        else
+        {
+            //recieve pos and vel from other players
+            //update this rigibody
+            //Done by photonRigidbodyView component
+        }
     }
 
     void OnTriggerStay(Collider other)
     {
         health--;
+        if (health < 0)
+            health = 0;
+        healthBar.localScale = new Vector3(health / 100f, 1, 1);
     }
 }
