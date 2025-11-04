@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviourPunCallbacks
 {
@@ -10,17 +11,20 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public float moveForce;
     public int health;
     Transform healthBar;
+    Text namePlate;
     
     //happens at game object creation time
     void Awake()
     {
         myBod = GetComponent<Rigidbody>();
-        healthBar = GameObject.Find("GreenHealth").transform;
+        healthBar = transform.Find("Canvas/GreenHealth").transform;
+        namePlate = transform.Find("Canvas/NamePlate").GetComponent<Text>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        namePlate.text = photonView.Owner.NickName;
     }
 
     // Update is called once per frame
@@ -45,9 +49,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     void OnTriggerStay(Collider other)
     {
-        health--;
-        if (health < 0)
-            health = 0;
-        healthBar.localScale = new Vector3(health / 100f, 1, 1);
+        if (photonView.IsMine)
+        {
+            health--;
+            if (health < 0)
+                health = 0;
+            healthBar.localScale = new Vector3(health / 100f, 1, 1);
+        }
     }
 }
