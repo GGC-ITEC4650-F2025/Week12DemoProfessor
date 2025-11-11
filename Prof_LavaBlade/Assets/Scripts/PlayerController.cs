@@ -5,7 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviourPunCallbacks
+public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
 {
     Rigidbody myBod;
     public float moveForce;
@@ -55,6 +55,18 @@ public class PlayerController : MonoBehaviourPunCallbacks
             if (health < 0)
                 health = 0;
             healthBar.localScale = new Vector3(health / 100f, 1, 1);
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (photonView.IsMine)
+        {
+            stream.SendNext(health);
+        }
+        else
+        {
+            health = (int)stream.ReceiveNext();
         }
     }
 }
