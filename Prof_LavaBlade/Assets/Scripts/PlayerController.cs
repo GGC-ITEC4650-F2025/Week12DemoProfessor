@@ -30,8 +30,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
     // Update is called once per frame
     void Update()
     {
-        //ONLY MOVE THE CUBE I OWN
-        if (photonView.IsMine)
+        if (photonView.IsMine) // THE CUBE I OWN
         {
             float h = Input.GetAxis("Horizontal");
             float v = Input.GetAxis("Vertical");
@@ -39,11 +38,21 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
             //SEND POS AND VEL OVER NETWORK TO ALL OTHER PLAYERS
             //Done by photonRigidbodyView component
         }
-        else
+        else // SOMEONE ELSE'S CUBE
         {
             //recieve pos and vel from other players
             //update this rigibody
             //Done by photonRigidbodyView component
+        }
+
+        //ALL CUBES NO MATTER WHO IS OWNER
+        healthBar.localScale = new Vector3(health / 100f, 1, 1);
+        if(health <= 0)
+        {
+            myBod.velocity = Vector3.zero;
+            myBod.constraints = RigidbodyConstraints.FreezeAll;
+            GetComponent<Collider>().enabled = false;
+            namePlate.color = Color.gray;
         }
     }
 
@@ -54,7 +63,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
             health--;
             if (health < 0)
                 health = 0;
-            healthBar.localScale = new Vector3(health / 100f, 1, 1);
         }
     }
 
