@@ -10,8 +10,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
     Rigidbody myBod;
     public float moveForce;
     public int health;
+    public int score;
     Transform healthBar;
     Text namePlate;
+    Text scorePlate;
     
     //happens at game object creation time
     void Awake()
@@ -19,6 +21,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
         myBod = GetComponent<Rigidbody>();
         healthBar = transform.Find("Canvas/GreenHealth").transform;
         namePlate = transform.Find("Canvas/NamePlate").GetComponent<Text>();
+        scorePlate = transform.Find("Canvas/ScorePlate").GetComponent<Text>();
     }
 
     // Start is called before the first frame update
@@ -46,6 +49,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         //ALL CUBES NO MATTER WHO IS OWNER
+        scorePlate.text = "" + score;
         healthBar.localScale = new Vector3(health / 100f, 1, 1);
         if(health <= 0)
         {
@@ -77,4 +81,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
             health = (int)stream.ReceiveNext();
         }
     }
+
+    [PunRPC]
+    public void increaseScore(int n)
+    {
+        this.score += n;
+    }
+
+
 }
