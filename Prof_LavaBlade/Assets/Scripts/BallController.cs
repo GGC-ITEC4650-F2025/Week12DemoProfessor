@@ -8,10 +8,15 @@ public class BallController : MonoBehaviourPunCallbacks
 {
     public Color[] colors;
     Renderer myRend;
-    // Start is called before the first frame update
+    
+    // Better to use Awake for variable initialization
     void Awake()
     {
         myRend = GetComponent<Renderer>();
+    }
+
+    void Start()
+    {
         myRend.material.color = colors[0];
     }
 

@@ -30,7 +30,8 @@ public class NetMan : MonoBehaviourPunCallbacks
     //RUNS ON SERVER WHEN PLAYER ENTERS GAME
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        if(PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == 2) {
+        //Create ball after 4 players join.
+        if(PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount == 4) {
             PhotonNetwork.Instantiate(ballPrefab.name, Vector3.zero, Quaternion.identity);
         }
     }
